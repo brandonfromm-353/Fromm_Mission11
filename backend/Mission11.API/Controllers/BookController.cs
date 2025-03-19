@@ -1,42 +1,52 @@
 using Microsoft.AspNetCore.Mvc;
 using Mission11.API.Data;
+using System.Linq;
 
 namespace Mission11.API.Controllers
 {
-    // route for the controller
+    // Route for the controller
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : ControllerBase
     {
-        private BookDbContext _bookContext;
-        
+        private readonly BookDbContext _bookContext;
+
         public BookController(BookDbContext temp)
         {
             _bookContext = temp;
         }
-        
+
         // GET api/book
-        public IActionResult Get(int pageSize = 5, int pageNumber = 1)
+        [HttpGet]
+        public IActionResult Get(int pageSize = 5, int pageNumber = 1, string sortOrder = "asc")
         {
-            // get the books from the database
-            var booklist = _bookContext.Books
-                // skip the number of books based on the page number and page size
+            // Define the initial query for books
+            var booksQuery = _bookContext.Books.AsQueryable();
+
+            // Apply sorting for title only (ascending or descending)
+            booksQuery = sortOrder == "asc" 
+                ? booksQuery.OrderBy(b => b.Title) 
+                : booksQuery.OrderByDescending(b => b.Title);
+
+            // Apply pagination
+            var totalBooks = booksQuery.Count();
+            var totalPages = (int)Math.Ceiling((double)totalBooks / pageSize);
+
+            // Get the books for the requested page
+            var bookList = booksQuery
                 .Skip((pageNumber - 1) * pageSize)
-                // take the number of books based on the page size
                 .Take(pageSize)
                 .ToList();
-            
-            var totalNumBooks = _bookContext.Books.Count();
-            
-            // create an anonymous object to return both books and total number of books
+
+            // Create an anonymous object to return both books and pagination information
             var bookObject = new
             {
-                Books = booklist,
-                TotalNumBooks = totalNumBooks
+                Books = bookList,
+                TotalNumBooks = totalBooks,
+                TotalPages = totalPages
             };
-            
+
             return Ok(bookObject);
         }
     }
 }
-

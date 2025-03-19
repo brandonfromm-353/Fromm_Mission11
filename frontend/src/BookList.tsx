@@ -9,34 +9,28 @@ function BookList() {
     const [totalPages, setTotalPages] = useState<number>(0);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Sorting state
 
-    // fetching books and pages from the API
+    // fetching books from the API
     useEffect(() => {
         const fetchBooks = async () => {
-            const response = await fetch(`https://localhost:5004/api/Book?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+            const response = await fetch(`https://localhost:5004/api/Book?pageSize=${pageSize}&pageNumber=${pageNumber}&sortOrder=${sortOrder}`);
             const data = await response.json();
             setBooks(data.books);
             setTotalBooks(data.totalNumBooks);
-            setTotalPages(Math.ceil(data.totalNumBooks / pageSize));
+            setTotalPages(data.totalPages); // Updated for total pages
         };
 
         fetchBooks();
-    }, [pageSize, pageNumber]);
+    }, [pageSize, pageNumber, sortOrder]); // Re-run when sortOrder changes
 
     // sorting books by title
     const handleSort = (order: 'asc' | 'desc') => {
-        const sortedBooks = [...books];
-        if (order === 'asc') {
-            sortedBooks.sort((a, b) => a.title.localeCompare(b.title));
-        } else {
-            sortedBooks.sort((a, b) => b.title.localeCompare(a.title));
-        }
-        setBooks(sortedBooks);
-        setSortOrder(order);
+        setSortOrder(order); // Set the sort order to either ascending or descending
+        setPageNumber(1); // Reset to page 1 when sorting changes
     };
 
     return (
         <div className="container">
-            <h1 className="my-4 text-center">The Book Store</h1>
+            <h1 className="my-4 text-center">The Bookstore</h1>
 
             {/* ascending and descending sorting buttons */}
             <div className="d-flex justify-content-center mb-4">
@@ -93,7 +87,7 @@ function BookList() {
                 </button>
             </div>
 
-            {/* Pagnination dropdown */}
+            {/* Pagination dropdown */}
             <div className="d-flex justify-content-center">
                 <label className="form-label me-2">
                     Results per page:
