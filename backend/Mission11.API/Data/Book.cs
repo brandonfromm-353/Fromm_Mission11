@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Mission11.API.Data;
 
+// model for the book all are required
 public class Book
 {
     [Key]

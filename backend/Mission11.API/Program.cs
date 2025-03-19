@@ -10,9 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// add the database context
 builder.Services.AddDbContext<BookDbContext>(options => 
     options.UseSqlite(builder.Configuration.GetConnectionString("BookStoreConnection")));
 
+// add CORS
 builder.Services.AddCors();
 
 var app = builder.Build();
@@ -24,6 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// use CORS and set the allowed api url
 app.UseCors(x => x.WithOrigins("http://localhost:5173"));
 
 app.UseHttpsRedirection();
