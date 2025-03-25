@@ -20,6 +20,17 @@ namespace Mission11.API.Controllers
         [HttpGet]
         public IActionResult Get(int pageSize = 5, int pageNumber = 1, string sortOrder = "asc")
         {
+            string? favoriteBookCategory = Request.Cookies["favoriteBookCategory"];
+            Console.WriteLine("---------COOKIE---------\n" + favoriteBookCategory );
+            
+            HttpContext.Response.Cookies.Append("FavoriteBookCategory", "Non-Fiction/Self-Help", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.Now.AddMinutes(1),
+                });
+            
             // Define the initial query for books
             var booksQuery = _bookContext.Books.AsQueryable();
 
