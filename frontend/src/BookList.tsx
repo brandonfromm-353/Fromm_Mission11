@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Book } from './types/Book';
 
-function BookList() {
+function BookList({selectedCategories}: {selectedCategories: string[]}) {
     const [books, setBooks] = useState<Book[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -12,7 +12,8 @@ function BookList() {
     // fetching books from the API
     useEffect(() => {
         const fetchBooks = async () => {
-            const response = await fetch(`https://localhost:5004/api/Book?pageSize=${pageSize}&pageNumber=${pageNumber}&sortOrder=${sortOrder}`);
+            const categoryParams = selectedCategories.map((c) => `categories=${encodeURIComponent(c)}`).join('&');
+            const response = await fetch(`https://localhost:5004/api/Book?pageSize=${pageSize}&pageNumber=${pageNumber}&sortOrder=${sortOrder}${selectedCategories.length ? `&${categoryParams}` : ''}`);
             const data = await response.json();
             setBooks(data.books);
             setTotalBooks(data.totalNumBooks);
@@ -20,7 +21,7 @@ function BookList() {
         };
 
         fetchBooks();
-    }, [pageSize, pageNumber, sortOrder]); // Re-run when sortOrder changes
+    }, [pageSize, pageNumber, sortOrder, selectedCategories]); // Re-run when sortOrder changes
 
     // sorting books by title
     const handleSort = (order: 'asc' | 'desc') => {
@@ -30,8 +31,6 @@ function BookList() {
 
     return (
         <div className="container">
-            <h1 className="my-4 text-center">The Bookstore</h1>
-
             {/* ascending and descending sorting buttons */}
             <div className="d-flex justify-content-center mb-4">
                 <button 

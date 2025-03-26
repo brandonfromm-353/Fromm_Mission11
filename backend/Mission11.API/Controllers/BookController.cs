@@ -18,22 +18,26 @@ namespace Mission11.API.Controllers
 
         // GET api/book
         [HttpGet]
-        public IActionResult Get(int pageSize = 5, int pageNumber = 1, string sortOrder = "asc")
+        public IActionResult Get(int pageSize = 5, int pageNumber = 1, string sortOrder = "asc", [FromQuery] List<string> categories = null)
         {
-            // Define the initial query for books
-            var booksQuery = _bookContext.Books.AsQueryable();
+            var query = _bookContext.Books.AsQueryable();
+
+            if (categories != null && categories.Any())
+            {
+                query = query.Where(c => categories.Contains(c.Category));
+            }
 
             // Apply sorting for title only (ascending or descending)
-            booksQuery = sortOrder == "asc" 
-                ? booksQuery.OrderBy(b => b.Title) 
-                : booksQuery.OrderByDescending(b => b.Title);
+            query = sortOrder == "asc" 
+                ? query.OrderBy(b => b.Title) 
+                : query.OrderByDescending(b => b.Title);
 
             // Apply pagination
-            var totalBooks = booksQuery.Count();
+            var totalBooks = query.Count();
             var totalPages = (int)Math.Ceiling((double)totalBooks / pageSize);
 
             // Get the books for the requested page
-            var bookList = booksQuery
+            var bookList = query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -47,6 +51,17 @@ namespace Mission11.API.Controllers
             };
 
             return Ok(bookObject);
+        }
+
+        [HttpGet("GetCategoryTypes")]
+        public IActionResult GetCategoryTypes()
+        {
+            var CategoryTypes = _bookContext.Books
+                .Select(c => c.Category)
+                .Distinct()
+                .ToList();
+            
+            return Ok(CategoryTypes);
         }
     }
 }
