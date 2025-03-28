@@ -1,0 +1,28 @@
+.category-filter {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Increase the gap between checkboxes */
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* More space between the checkbox and the label */
+}
+
+.category-checkbox {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px; /* Increased checkbox size for better visibility */
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333; /* Make the title darker for better contrast */
+}

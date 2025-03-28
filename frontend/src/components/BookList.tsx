@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Book } from './types/Book';
+import { Book } from '../types/Book';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { CartItem } from '../types/CartItem';
 
 function BookList({selectedCategories}: {selectedCategories: string[]}) {
+    const navigate = useNavigate();
     const [books, setBooks] = useState<Book[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [totalBooks, setTotalBooks] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Sorting state
+    const { addToCart } = useCart();
+    const [cartAmount, setCartAmount] = useState<number>(0);
 
     // fetching books from the API
     useEffect(() => {
@@ -29,12 +35,23 @@ function BookList({selectedCategories}: {selectedCategories: string[]}) {
         setPageNumber(1); // Reset to page 1 when sorting changes
     };
 
+    const handleAddToCart = (book: Book) => {
+        const newItem: CartItem = {
+            bookID: book.bookID,
+            title: book.title,
+            price: book.price,
+            quantity: 1,
+        };
+        addToCart(newItem);
+        navigate('/cart');
+    };
+
     return (
         <div className="container">
             {/* ascending and descending sorting buttons */}
-            <div className="d-flex justify-content-center mb-4">
+            <div className="btn-group mb-4">
                 <button 
-                    className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'} me-2`} 
+                    className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'}`} 
                     onClick={() => handleSort('asc')}>
                     Sort Ascending
                 </button>
@@ -47,7 +64,7 @@ function BookList({selectedCategories}: {selectedCategories: string[]}) {
 
             <div className="list-group">
                 {books.map((b) => (
-                    <div className="list-group-item mb-3 shadow-sm" key={b.bookId}>
+                    <div className="list-group-item mb-3 shadow-sm" key={b.bookID}>
                         <h5 className="mb-2">{b.title}</h5>
                         <ul className="list-unstyled">
                             <li><strong>Author:</strong> {b.author}</li>
@@ -57,6 +74,8 @@ function BookList({selectedCategories}: {selectedCategories: string[]}) {
                             <li><strong>Page Count:</strong> {b.pageCount}</li>
                             <li><strong>Price:</strong> ${b.price}</li>
                         </ul>
+
+                        <button onClick={() => {handleAddToCart(b)}} className="btn btn-primary">Add to Cart</button>
                     </div>
                 ))}
             </div>

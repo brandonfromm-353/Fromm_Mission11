@@ -1,28 +1,24 @@
 import './App.css'
-import BookList from './BookList'
-import CategoryFilter from './CategoryFilter'
-import Welcome from './Welcome'
+import ProjectsPage from './pages/ProjectsPage'
+import CartPage from './pages/CartPage'
 import { useState } from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { CartProvider } from './context/CartContext'
 
 function App() {
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+  //Changed this to use the CartProvider and routes to handle routing for the application.
   return (
     <>
-    <div className="container mt-4">
-      <div className='row bg-primary text-white'>
-        <Welcome />
-      </div>
-      <br />
-      <div className='row'>
-        <div className='col-md-3'>
-          <CategoryFilter selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
-        </div>
-        <div className='col-md-9'>
-          <BookList selectedCategories={selectedCategories}/>
-        </div>
-      </div>
-     </div>
+      <CartProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<ProjectsPage />} />
+            <Route path="/cart" element={<CartPage />} />
+          </Routes>
+        </Router>
+      </CartProvider>
     </>
   )
 }

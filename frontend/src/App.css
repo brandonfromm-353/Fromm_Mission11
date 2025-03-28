@@ -37,6 +37,11 @@
   padding: 2em;
 }
 
+.card:hover {
+  transform: scale(1.02);
+  transition: 0.3s ease-in-out;
+}
+
 .read-the-docs {
   color: #888;
 }

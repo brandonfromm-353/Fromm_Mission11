@@ -53,6 +53,9 @@ namespace Mission11.API.Controllers
             return Ok(bookObject);
         }
 
+        // GET api/book/GetCategoryTypes
+        // This method returns a list of distinct category types from the books
+        // This endpoint can be used to get the available categories for filtering
         [HttpGet("GetCategoryTypes")]
         public IActionResult GetCategoryTypes()
         {
