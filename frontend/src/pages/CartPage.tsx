@@ -9,10 +9,10 @@ function CartPage() {
 
     return (
         // the main container for the cart page
-        <div className="container mt-5">
-            <h2 className="mb-4 text-center">Your Cart</h2>
+        <div className="container mt-5 mb-5">
 
             <div className="card p-4 shadow-sm">
+                <h2 className="mb-4 text-center">Your Cart</h2>
                 {cart.length === 0 ? (
                     <p className="text-center text-muted">Your cart is empty</p>
                 ) : (
@@ -23,7 +23,8 @@ function CartPage() {
                                 <div className="d-flex align-items-center">
                                     <div className="ms-3">
                                         <h5 className="mb-1">{item.title}</h5>
-                                        <p className="text-muted mb-1">${item.price.toFixed(2)} (Qty: {item.quantity})</p>
+                                        <p className="text-muted mb-1">${item.price.toFixed(2)}</p>
+                                        <p className="text-muted mb-1">Qty: {item.quantity}</p>
                                     </div>
                                 </div>
                                 <button 

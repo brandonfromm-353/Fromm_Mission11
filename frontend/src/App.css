@@ -37,11 +37,16 @@
   padding: 2em;
 }
 
-.card:hover {
+.read-the-docs {
+  color: #888;
+}
+
+.list-group-item:hover {
+  color: #0d6efd;
   transform: scale(1.02);
   transition: 0.3s ease-in-out;
 }
 
-.read-the-docs {
-  color: #888;
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }

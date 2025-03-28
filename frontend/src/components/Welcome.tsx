@@ -1,8 +1,10 @@
-// displays the title of the bookstore
+// This component displays a welcome message for the bookstore
 function Welcome() {
   return (
-    <div className='row bg-primary text-white'>
-        <h1 className="my-4 text-center">The Bookstore</h1>
+    <div className="bg-primary text-white d-flex align-items-center">
+      <div className="container text-center p-5">
+        <h1 className="display-3 fw-bold text-shadow">Welcome to The Bookstore</h1>
+      </div>
     </div>
   );
 }

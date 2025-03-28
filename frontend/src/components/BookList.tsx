@@ -49,17 +49,35 @@ function BookList({selectedCategories}: {selectedCategories: string[]}) {
     return (
         <div className="container">
             {/* ascending and descending sorting buttons */}
-            <div className="btn-group mb-4">
-                <button 
-                    className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'}`} 
-                    onClick={() => handleSort('asc')}>
-                    Sort Ascending
-                </button>
-                <button 
-                    className={`btn ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`} 
-                    onClick={() => handleSort('desc')}>
-                    Sort Descending
-                </button>
+            <div className="container">
+                <div className="dropdown mb-4">
+                    <button 
+                        className="btn btn-primary dropdown-toggle" 
+                        type="button" 
+                        data-bs-toggle="dropdown" // This makes it work with Bootstrap JS
+                        aria-expanded="false"
+                    >
+                        Sort by
+                    </button>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <button 
+                                className="dropdown-item" 
+                                onClick={() => handleSort('asc')}
+                            >
+                                Sort Ascending
+                            </button>
+                        </li>
+                        <li>
+                            <button 
+                                className="dropdown-item" 
+                                onClick={() => handleSort('desc')}
+                            >
+                                Sort Descending
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div className="list-group">
