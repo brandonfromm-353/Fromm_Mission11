@@ -6,7 +6,7 @@ interface fetchBooksResponse {
     totalNumBooks: number;
 }
 
-const API_URL = 'https://localhost:5004/api/Book';
+const API_URL = 'https://bookstore-fromm-backend.azurewebsites.net/api/Book';
 
 export const fetchBooks = async (pageSize: number, pageNumber: number, selectedCategories: string[], sortOrder: string): Promise<fetchBooksResponse> => {
     try {

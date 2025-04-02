@@ -1,7 +1,7 @@
 import './App.css'
 import ProjectsPage from './pages/ProjectsPage'
 import CartPage from './pages/CartPage'
-import AdminPage from './pages/adminPage'
+import AdminPage from './pages/AdminPage'
 import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
