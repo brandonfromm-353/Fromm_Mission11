@@ -9,7 +9,7 @@ function CategoryFilter({selectedCategories, setSelectedCategories}: {selectedCa
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch("https://bookstore-fromm-backend.azurewebsites.net/api/Book/GetCategoryTypes");
+                const response = await fetch("https://fromm-mission12-backend.azurewebsites.net/api/Book/GetCategoryTypes");
                 const data = await response.json();
                 setCategories(data);
             } catch (error) {
