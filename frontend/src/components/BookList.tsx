@@ -14,7 +14,6 @@ function BookList({selectedCategories}: {selectedCategories: string[]}) {
     const [totalPages, setTotalPages] = useState<number>(0);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Sorting state
     const { addToCart } = useCart();
-    const [cartAmount, setCartAmount] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
