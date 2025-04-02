@@ -3,31 +3,47 @@ import { Book } from '../types/Book';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { CartItem } from '../types/CartItem';
+import { fetchBooks } from '../api/booksAPI';
+import Pagination from './Pagination';
 
 function BookList({selectedCategories}: {selectedCategories: string[]}) {
     const navigate = useNavigate();
     const [books, setBooks] = useState<Book[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [totalBooks, setTotalBooks] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Sorting state
     const { addToCart } = useCart();
     const [cartAmount, setCartAmount] = useState<number>(0);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     // fetching books from the API
     useEffect(() => {
-        const fetchBooks = async () => {
-            const categoryParams = selectedCategories.map((c) => `categories=${encodeURIComponent(c)}`).join('&');
-            const response = await fetch(`https://localhost:5004/api/Book?pageSize=${pageSize}&pageNumber=${pageNumber}&sortOrder=${sortOrder}${selectedCategories.length ? `&${categoryParams}` : ''}`);
-            const data = await response.json();
+        const loadBooks = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchBooks(pageSize, pageNumber, selectedCategories, sortOrder);
+
             setBooks(data.books);
-            setTotalBooks(data.totalNumBooks);
-            setTotalPages(data.totalPages); // Updated for total pages
+            setTotalPages(Math.ceil(data.totalNumBooks / pageSize)); // Updated for total pages
+            }
+            catch (error) {
+                setError((error as Error).message);
+            } finally {
+                setLoading(false);
+            }
         };
 
-        fetchBooks();
-    }, [pageSize, pageNumber, sortOrder, selectedCategories]); // Re-run when sortOrder changes
+        loadBooks();
+    }, [pageSize, pageNumber, selectedCategories, sortOrder]); // Re-run when sortOrder changes
+
+    if (loading) {
+        return <div className="text-center">Loading books...</div>; // Loading state
+    }
+    if (error) {
+        return <div className="text-danger text-center">Error: {error}</div>; // Error state
+    }
 
     // sorting books by title
     const handleSort = (order: 'asc' | 'desc') => {
@@ -98,48 +114,17 @@ function BookList({selectedCategories}: {selectedCategories: string[]}) {
                 ))}
             </div>
 
-            {/* previous, pages, and next page buttons */}
-            <div className="d-flex justify-content-center my-4">
-                <button 
-                    className="btn btn-primary me-2" 
-                    onClick={() => setPageNumber(pageNumber - 1)} 
-                    disabled={pageNumber === 1}>
-                    Previous
-                </button>
-                {[...Array(totalPages).keys()].map((page) => (
-                    <button 
-                        className={`btn btn-outline-primary me-2 ${page + 1 === pageNumber ? 'active' : ''}`} 
-                        key={page} 
-                        onClick={() => setPageNumber(page + 1)} 
-                        disabled={page + 1 === pageNumber}>
-                        {page + 1}
-                    </button>
-                ))}
-                <button 
-                    className="btn btn-primary ms-2" 
-                    onClick={() => setPageNumber(pageNumber + 1)} 
-                    disabled={pageNumber === totalPages}>
-                    Next
-                </button>
-            </div>
-
-            {/* Pagination dropdown */}
-            <div className="d-flex justify-content-center">
-                <label className="form-label me-2">
-                    Results per page:
-                    <select 
-                        className="form-select" 
-                        value={pageSize} 
-                        onChange={(e) => {
-                            setPageSize(Number(e.target.value));
-                            setPageNumber(1);
-                        }}>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                    </select>
-                </label>
-            </div>
+            {/* Pagination component */}
+            <Pagination
+                currentPage={pageNumber}
+                totalPages={totalPages}
+                pageSize={pageSize}
+                onPageChange={setPageNumber}
+                onPageSizeChange={newPageSize => {
+                    setPageSize(newPageSize);
+                    setPageNumber(1); // Reset to page 1 when page size changes
+                }}
+            />
         </div>
     );
 }

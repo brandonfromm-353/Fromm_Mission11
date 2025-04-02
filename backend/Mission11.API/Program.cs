@@ -15,7 +15,15 @@ builder.Services.AddDbContext<BookDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BookStoreConnection")));
 
 // add CORS
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+    options.AddPolicy("AllowReactApp",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyMethod() // Allow any HTTP method
+            .AllowAnyHeader(); // Allow any header
+    })
+);
 
 var app = builder.Build();
 
@@ -27,7 +35,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // use CORS and set the allowed api url
-app.UseCors(x => x.WithOrigins("http://localhost:5173"));
+app.UseCors("AllowReactApp");
 
 app.UseHttpsRedirection();
 

@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/3f37a759-07db-442f-bfee-feb4072e4f64/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/Bookstore-Fromm-Backend",
+    "appService.deploySubpath": "backend/Mission11.API/publish"
+}
