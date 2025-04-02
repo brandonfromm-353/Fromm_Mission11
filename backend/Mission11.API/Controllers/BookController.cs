@@ -66,5 +66,63 @@ namespace Mission11.API.Controllers
             
             return Ok(CategoryTypes);
         }
+
+        [HttpPost("AddBook")]
+        // This method allows adding a new book to the database
+        public IActionResult AddBook([FromBody] Book newBook)
+        {
+            if (newBook == null)
+            {
+                return BadRequest("Book data is null");
+            }
+
+            // Add the new book to the database
+            _bookContext.Books.Add(newBook);
+            _bookContext.SaveChanges();
+
+            return Ok(newBook); // Return the added book as confirmation
+        }
+
+        [HttpPut("UpdateBook/{bookID}")]
+        // This method allows updating an existing book in the database
+        public IActionResult UpdateBook(int bookID, [FromBody] Book updatedBook)
+        {
+            // Find the existing book in the database
+            var existingBook = _bookContext.Books.Find(bookID); // Use Find to get the book by ID
+
+            // Update the existing book's properties
+            existingBook.Title = updatedBook.Title;
+            existingBook.Author = updatedBook.Author;
+            existingBook.Category = updatedBook.Category;
+            existingBook.Price =  updatedBook.Price;
+            existingBook.Publisher = updatedBook.Publisher;
+            existingBook.ISBN = updatedBook.ISBN;
+            existingBook.Classification = updatedBook.Classification;
+            existingBook.PageCount = updatedBook.PageCount;
+
+            _bookContext.Books.Update(existingBook); // Update the book in the DbContext
+            // Save the changes to the database
+            _bookContext.SaveChanges();
+
+            return Ok(existingBook); // Return the updated book
+        }
+
+        // This method allows deleting a book from the database
+        [HttpDelete("DeleteBook/{bookID}")]
+        public IActionResult DeleteBook(int bookID)
+        {
+            // Find the book in the database
+            var bookToDelete = _bookContext.Books.Find(bookID);
+            if (bookToDelete == null)
+            {
+                return NotFound("Book not found");
+            }
+
+            // Remove the book from the database
+            _bookContext.Books.Remove(bookToDelete);
+            _bookContext.SaveChanges();
+
+            return Ok($"Book with ID {bookID} deleted successfully"); // Return success message
+        }
     }
 }
